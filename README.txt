@@ -10,37 +10,34 @@ To run this project:
 
 Files:
 
-1. media.py
-2. entertainment_center.py
-3. fresh_tomatoes.py
+1. report.py
 
 How it works:
 
-entertainment_enter.py stores list of movies using class movie(), 
-it also imports fresh_tomatoes.py which contains html and css codes.
-When entertainment_enter.py is ran it generates a html file called 
-fresh_tomatoes.html
-
-this site simply shows trailer of some movies.
+report.py connects to the news database through postgresql.
+it runs some queries on the database. the queries help to 
+find popular articles of all time. popular authors of all time
+and on which days more than 1% of requests lead to errors. 
+report.py then fetch all the resuls of the queries and prints
+on the display in a formatted way.
 
 Steps for running the program:
 
-1. goto IDLE(IDE for python) 
-2. from 'File' menu select 'Open'
-3. using file explorer window select and open entertainment_center.py
-4. press F5 or select 'Run Module' from 'Run' menu
-5. IDLE shell will interpret and run the program
-6. in the default browser, a website named fresh tomatoes will open
-7. user can enjoy the trailers by selecting movies from the list
+1. save the file report.py where the news database file is kept
+2. got to git bash 
+3. start the virtual machine using command 
+			vagrant up
+4. login to the VM using 
+			vagrant ssh
+5. using cd command go to the path where report.py was saved
+6. now enter the following command to execute the program
+			python report.py
+7. user can see the report generated on the news database
 
 Git access:
 
-https://github.com/szasohel/trailer_site.git
+https://github.com/szasohel/reporting_tool.git
 
-Modified by:
+Created by:
 
 Sayed Zahed Abdullah Sohel
-
-Acknowledgments
-
-Part of codes are used from udacity python tutorial 
