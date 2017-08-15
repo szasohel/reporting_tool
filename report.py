@@ -1,15 +1,17 @@
+#!/usr/bin/env python3
+
 import psycopg2
 import datetime
 
 # Commands for postgresql
 # pop_art to find popular articles
 pop_art = """select A.title, count(*) as views from log L left join articles A
-            on substring(L.path,10)=A.slug group by A.title
-            order by views desc limit 5 offset 1;"""
+            on '/article/'||A.slug=L.path where A.title like '%'
+            group by A.title order by views desc limit 3;"""
 # pop_auth to find popular authors
-pop_auth = """select A.name, count(*) as veiws from articles R join authors A
+pop_auth = """select A.name, count(*) as views from articles R join authors A
             on R.author = A.id join log L  on R.slug = substring(L.path,10)
-            group by A.name order by veiws desc;"""
+            group by A.name order by views desc;"""
 # error_rep to find error report
 error_rep = """select * from(select time::timestamp::date,count(*) as all,
             cast(sum(case when status like '404%' then 1 else 0 end)
@@ -29,8 +31,8 @@ articles = cur.fetchall()
 # \033[1;36m to make the statement colored
 print ("\033[1;36m\nThree most popular articles are:\033[1;m\n")
 # A loop to print each result from the articles list
-for article in articles:
-    print(article[0] + " - " + str(article[1]) + " views")
+for title, views in articles:
+    print(title + " - " + str(views) + " views")
 
 # cur execute the command to find popular authors
 cur.execute(pop_auth)
@@ -39,8 +41,8 @@ authors = cur.fetchall()
 # \033[1;36m to make the statement colored
 print ("\033[1;36m\nMost popular article authors are:\033[1;m\n")
 # A loop to print each result from the authors list
-for author in authors:
-    print(author[0] + " - " + str(author[1]) + " views")
+for author, a_views in authors:
+    print(author + " - " + str(a_views) + " views")
 
 # cur execute the command to find days error occured more than 1%
 cur.execute(error_rep)
@@ -48,11 +50,10 @@ cur.execute(error_rep)
 errors = cur.fetchall()
 # \033[1;36m to make the statement colored
 print ("""\033[1;36m\nList of days that did more than 1% of request lead
-       to errors:\033[1;m\n""")
+to errors:\033[1;m\n""")
 # A loop to print each result from the errors list
 for error in errors:
-    print(error[0].strftime("%B %d,%Y") + " - " + "%.2f" % (error[2]) +
-          "% errors\n")
+    print(" {0:%B %d, %Y} - {1:.2f}% errors".format(error[0], error[2]))
 
 # cur closed
 cur.close()
